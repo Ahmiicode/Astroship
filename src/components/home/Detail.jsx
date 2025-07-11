@@ -12,6 +12,35 @@ import {
   FaNodeJs,
   FaGithub
 } from "react-icons/fa";
+import { motion } from "framer-motion";
+
+// Animation Variants
+const featureVariant = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.15,
+      type: "spring",
+      stiffness: 60,
+    },
+  }),
+};
+
+const techVariant = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: (i) => ({
+    opacity: 1,
+    scale: 1,
+    transition: {
+      delay: i * 0.1 + 0.3,
+      type: "spring",
+      stiffness: 100,
+      damping: 10,
+    },
+  }),
+};
 
 export default function Detail() {
   const features = [
@@ -69,14 +98,19 @@ export default function Detail() {
 
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, idx) => (
-            <div
+            <motion.div
               key={idx}
               className="flex flex-col items-start gap-3 text-left border border-slate-200 p-6 rounded-lg hover:shadow-md transition"
+              custom={idx}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              variants={featureVariant}
             >
               <div className="text-slate-900">{feature.icon}</div>
               <h3 className="text-xl font-semibold">{feature.title}</h3>
               <p className="text-slate-600">{feature.desc}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -92,14 +126,18 @@ export default function Detail() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-8 items-center justify-center">
           {tech.map((item, index) => (
-            <div
+            <motion.div
               key={index}
-              className="flex flex-col items-center space-y-2 hover:scale-105 transition-transform"
+              className="flex flex-col items-center space-y-2 hover:scale-110 transition-transform"
+              custom={index}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              variants={techVariant}
             >
-             <div className="text-black ">{item.icon}</div>
-
+              <div className="text-black">{item.icon}</div>
               <p className="text-sm font-semibold">{item.name}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

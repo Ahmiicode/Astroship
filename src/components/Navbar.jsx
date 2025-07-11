@@ -7,14 +7,31 @@ export default function Navbar() {
 
   const menuVariants = {
     hidden: { opacity: 0, y: -20 },
-    visible: { opacity: 1, y: 0 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+      },
+    },
     exit: { opacity: 0, y: -20 },
+  };
+
+  const menuItemVariants = {
+    hidden: { opacity: 0, y: -10 },
+    visible: { opacity: 1, y: 0 },
   };
 
   const navLinks = ["Home", "Pricing", "About", "Blog", "Contact"];
 
   return (
-    <nav className="bg-white text-gray-900 text-xl font-semibold px-6 py-4 flex items-center justify-between relative">
+    <motion.nav
+      initial={{ y: -50, scale: 0.8, opacity: 0 }}
+      animate={{ y: 0, scale: 1, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 120, damping: 20 }}
+      className="bg-white text-gray-900 text-xl font-semibold px-6 py-4 flex items-center justify-between relative"
+    >
       {/* Logo */}
       <div className="text-2xl font-bold z-20">
         <Link to="/" className="hover:text-gray-700">
@@ -25,23 +42,31 @@ export default function Navbar() {
       {/* Desktop Nav Links */}
       <ul className="hidden md:flex space-x-12 mx-auto">
         {navLinks.map((item) => (
-          <li key={item}>
+          <motion.li
+            key={item}
+            whileHover={{ scale: 1.1 }}
+            className="relative"
+          >
             <Link
               to={`/${item === "Home" ? "" : item.toLowerCase()}`}
               className="hover:text-black text-gray-900"
             >
               {item}
+              <motion.span
+                layoutId="underline"
+                className="block h-0.5 bg-black absolute bottom-[-6px] left-0 right-0 scale-x-0 origin-left"
+                whileHover={{ scaleX: 1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              />
             </Link>
-          </li>
+          </motion.li>
         ))}
       </ul>
 
       {/* Desktop Login/Signup */}
       <div className="hidden md:flex space-x-4">
         <button className="hover:text-black text-gray-900">Login</button>
-        <button className="bg-black text-white px-5 py-3 rounded">
-          Signup
-        </button>
+        <button className="bg-black text-white px-5 py-3 rounded">Signup</button>
       </div>
 
       {/* Mobile Hamburger */}
@@ -50,7 +75,7 @@ export default function Navbar() {
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle Menu"
       >
-        <svg
+        <motion.svg
           className="w-8 h-8 text-gray-900"
           fill="none"
           stroke="currentColor"
@@ -58,13 +83,33 @@ export default function Navbar() {
           strokeLinecap="round"
           strokeLinejoin="round"
           viewBox="0 0 24 24"
+          animate={isOpen ? "open" : "closed"}
+          variants={{
+            closed: { rotate: 0 },
+            open: { rotate: 90 },
+          }}
+          transition={{ type: "spring", stiffness: 300 }}
         >
           {isOpen ? (
-            <path d="M6 18L18 6M6 6l12 12" />
+            <motion.path
+              d="M6 18L18 6M6 6l12 12"
+              variants={{
+                closed: { pathLength: 0, opacity: 0 },
+                open: { pathLength: 1, opacity: 1 },
+              }}
+              transition={{ duration: 0.3 }}
+            />
           ) : (
-            <path d="M3 12h18M3 6h18M3 18h18" />
+            <motion.path
+              d="M3 12h18M3 6h18M3 18h18"
+              variants={{
+                closed: { pathLength: 1, opacity: 1 },
+                open: { pathLength: 0, opacity: 0 },
+              }}
+              transition={{ duration: 0.3 }}
+            />
           )}
-        </svg>
+        </motion.svg>
       </button>
 
       {/* Mobile Menu */}
@@ -81,14 +126,19 @@ export default function Navbar() {
           >
             <nav className="flex flex-col space-y-4 items-center text-lg font-semibold">
               {navLinks.map((item) => (
-                <Link
+                <motion.div
                   key={item}
-                  to={`/${item === "Home" ? "" : item.toLowerCase()}`}
-                  className="hover:text-gray-400"
-                  onClick={() => setIsOpen(false)}
+                  variants={menuItemVariants}
+                  className="w-full text-center"
                 >
-                  {item}
-                </Link>
+                  <Link
+                    to={`/${item === "Home" ? "" : item.toLowerCase()}`}
+                    className="hover:text-gray-400 block w-full"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item}
+                  </Link>
+                </motion.div>
               ))}
             </nav>
 
@@ -109,6 +159,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </motion.nav>
   );
 }
